@@ -5,9 +5,8 @@ class User:
     user_count = 0  # Class variable to keep track of the number of users
 
     def __init__(self, username):
-        self.username = username
-        User.user_count += 1
-        self.user_id = User.user_count  # Assign a unique user ID
+         self.username = username
+        self.user_id = None
 
     def save_to_db(self):
         connection = sqlite3.connect("social_media.db")
@@ -15,7 +14,8 @@ class User:
         try:
             cursor.execute("INSERT INTO users (username) VALUES (?)", (self.username,))
             connection.commit()
-            print(f"User '{self.username}' created successfully.")
+            self.user_id  = cursor.lastrowid
+              print(f"User '{self.username}' created with User ID: {self.user_id}.")
         except sqlite3.IntegrityError:
             print(f"Error: The username '{self.username}' already exists. Please choose a different username.")
             connection.rollback()  # Roll back the transaction
